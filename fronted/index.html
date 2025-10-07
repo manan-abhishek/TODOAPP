@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+  <img src="skillionlogo.png" alt="App Logo" class="logo">
+  <h1>To-Do App</h1>
+</header>
+
+
+  <div class="input-area">
+    <input id="taskInput" type="text" placeholder="Enter new task...">
+    <select id="statusSelect">
+      <option value="not_done">Not Done Yet</option>
+      <option value="in_progress">Still in Progress</option>
+      <option value="backlog">Backlog</option>
+      <option value="completed">Completed</option>
+    </select>
+    <button onclick="addTask()">Add</button>
+  </div>
+
+  <div class="board">
+    <div class="column" id="not_done">
+      <h2>Not Done Yet</h2>
+      <div class="task-list"></div>
+    </div>
+
+    <div class="column" id="in_progress">
+      <h2>Still in Progress</h2>
+      <div class="task-list"></div>
+    </div>
+
+    <div class="column" id="backlog">
+      <h2>Backlog</h2>
+      <div class="task-list"></div>
+    </div>
+
+    <div class="column" id="completed">
+      <h2>Completed</h2>
+      <div class="task-list"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
