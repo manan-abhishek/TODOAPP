@@ -56,10 +56,7 @@ TODOAPP/
 │
 └─ .gitignore
 
-yaml
-Copy code
 
----
 
 ## Installation
 
