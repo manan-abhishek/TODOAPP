@@ -17,7 +17,7 @@ This app allows users to add, delete, and mark tasks as completed. Data is persi
 - Delete tasks  
 - Mark tasks as completed  
 - Persist tasks in **MongoDB**  
-- Full-stack JavaScript application  
+- Full-stack JavaScript application
 
 ---
 
