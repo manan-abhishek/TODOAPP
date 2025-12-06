@@ -1,45 +1,75 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const Task = require('./models/Task');
 
-dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB Connected'))
-  .catch(err => console.error(err));
+const PORT = process.env.PORT || 5000;
 
-// Routes
-app.get('/tasks', async (req, res) => {
-  const tasks = await Task.find();
+// ✅ In-memory "database"
+let tasks = [];
+let nextId = 1;
+
+// ✅ Health Check Route
+app.get('/', (req, res) => {
+  res.send('✅ API is running successfully (in-memory DB)');
+});
+
+// ✅ Get all tasks
+app.get('/tasks', (req, res) => {
   res.json(tasks);
 });
 
-app.post('/tasks', async (req, res) => {
-  const newTask = new Task({ title: req.body.title, status: req.body.status || 'not_done' });
-  await newTask.save();
+// ✅ Add new task
+app.post('/tasks', (req, res) => {
+  const { title, status } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+
+  const newTask = {
+    _id: String(nextId++),         // mimic Mongo _id as string
+    title,
+    status: status || 'not_done'
+  };
+
+  tasks.push(newTask);
   res.json(newTask);
 });
 
-app.put('/tasks/:id', async (req, res) => {
-  const updated = await Task.findByIdAndUpdate(
-    req.params.id,
-    { status: req.body.status },
-    { new: true }
-  );
-  res.json(updated);
+// ✅ Update task status
+app.put('/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const task = tasks.find(t => t._id === id);
+  if (!task) {
+    return res.status(404).json({ error: 'Task not found' });
+  }
+
+  if (status) {
+    task.status = status;
+  }
+
+  res.json(task);
 });
 
-app.delete('/tasks/:id', async (req, res) => {
-  await Task.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Task deleted' });
+// ✅ Delete task
+app.delete('/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  const index = tasks.findIndex(t => t._id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: 'Task not found' });
+  }
+
+  tasks.splice(index, 1);
+  res.json({ message: '✅ Task deleted successfully' });
 });
 
-app.listen(process.env.PORT, () =>
-  console.log(`🚀 Server running on http://localhost:${process.env.PORT}`)
-);
+// ✅ Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
